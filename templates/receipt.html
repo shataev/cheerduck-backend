@@ -5,7 +5,7 @@
     <title>Receipt Template</title>
     <link type="text/css" rel="stylesheet" href="receipt.css">
 </head>
-<body>
+<body id="body">
     <div class="column">
         <div class="header">
             <img src="../assets/logo.png" alt="Cheerduck" class="logo">
@@ -247,5 +247,19 @@
             <img src="../assets/QRCode.png" alt="QR Code for payment" class="img-qr-code">
         </footer>
     </div>
+    <script src="../node_modules/html2pdf.js/dist/html2pdf.bundle.min.js"></script>
+    <script>
+
+        var element = document.getElementById('body');
+        html2pdf()
+            .from(element)
+            .set({
+                jsPDF: {
+                    format: 'a4',
+                    orientation: "landscape",
+                }
+            })
+            .save();
+    </script>
 </body>
 </html>
