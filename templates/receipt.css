@@ -1,0 +1,126 @@
+html,body{
+    width:297mm;
+    height:210mm;
+}
+
+body{
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.column {
+    flex: 0 0 50%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.logo   {
+    width: 200px;
+}
+
+.company-info {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    text-align: left;
+}
+
+.page-title {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.customer-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.customer-info-wrapper {
+    display: flex;
+}
+
+.customer-info-wrapper:first-child {
+    margin-bottom: 10px;
+}
+
+.customer-info-title {
+    flex: 0 1 auto;
+    margin-right: 5px;
+}
+
+.customer-info-title:nth-child(3) {
+    margin-left: 20px;
+}
+
+.customer-info-value {
+    flex: 1 0 auto;
+    border-bottom: 1px black solid;
+    text-align: center;
+}
+
+.table {
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.table td, .table th {
+    border: 1px solid black;
+    height: 20px;
+    padding: 5px;
+}
+
+.cell-content {
+    display: flex;
+}
+
+.cell-content-text {
+    flex: 0 0 auto;
+}
+
+.cell-content-value {
+    flex: 1 0 auto;
+    text-align: center;
+}
+
+.receiver-sign-container {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.receiver-sign-title,
+.receiver-sign-thanks {
+    flex: 0 0 auto;
+}
+
+.receiver-sign-sign {
+    flex: 1 0 auto;
+    border-bottom: 1px solid black;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.payment-info-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.img-prompt-pay {
+    width: 100px;
+}
