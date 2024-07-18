@@ -1,7 +1,7 @@
 const fs = require('fs');
 const docx = require('docx');
 const {PatchType} = require("docx");
-const { patchDocument, Document, Packer, Paragraph, TextRun } = docx;
+const { patchDocument, TextRun } = docx;
 
 // Функция для чтения и заполнения шаблона
 async function fillTemplate(data) {
