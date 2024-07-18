@@ -54,24 +54,8 @@ async function fillTemplate(data) {
             },
         }
     }).then((doc) => {
-        fs.writeFileSync(`Cheerducksdvsdvdsvdsvds_${data.name}.docx`, doc);
+        fs.writeFileSync(`Cheerduck_${data.name}.docx`, doc);
     });
-
-    // Заменить закладки данными
-    //doc.replaceText("{NAME}", data.name);
-/*    doc.replaceText("{DATE}", data.date);
-    doc.replaceText("{ADDRESS}", data.address);
-    doc.replaceText("{PASSPORT}", data.passport);
-    doc.replaceText("{CHECK_IN_DATE}", data.checkInDate);
-    doc.replaceText("{CHECK_OUT_DATE}", data.checkOutDate);
-    doc.replaceText("{ELECTR}", data.electricity);
-    doc.replaceText("{PRICE}", data.price);
-    doc.replaceText("{DEPOSIT}", data.deposit);
-    doc.replaceText("{TOTAL}", data.total);*/
-
-    // Сохранить заполненный документ
-    //const buffer = await Packer.toBuffer(doc);
-    //fs.writeFileSync('filled-check.docx', buffer);
 }
 
 // Пример данных для заполнения
