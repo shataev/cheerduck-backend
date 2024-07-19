@@ -5,261 +5,273 @@
     <title>Receipt Template</title>
     <link type="text/css" rel="stylesheet" href="receipt.css">
 </head>
-<body id="body">
-    <div class="column">
-        <div class="header">
-            <img src="../assets/logo.png" alt="Cheerduck" class="logo">
-            <div class="company-info">
-                <span>354/175 Thappraya 12</span>
-                <span>Banglamund Chonburi 20150</span>
-                <span>Tel. 080-103-0800 </span>
-                <span>Line ID: CHEERDUCK</span>
+<body>
+    <div class="print-content-container">
+        <div id="print-content">
+        <div class="column">
+            <div class="header">
+                <img src="../assets/logo.png" alt="Cheerduck" class="logo">
+                <div class="company-info">
+                    <span>354/175 Thappraya 12</span>
+                    <span>Banglamund Chonburi 20150</span>
+                    <span>Tel. 080-103-0800 </span>
+                    <span>Line ID: CHEERDUCK</span>
+                </div>
             </div>
+            <h1 class="page-title">ใบแจ้งค่าใช้จ่าย / DEBIT NOTE</h1>
+            <div class="customer-info">
+                <div class="customer-info-wrapper">
+                    <span class="customer-info-title">นาม/NAME</span>
+                    <span class="customer-info-value">{{ name }}</span>
+                    <span class="customer-info-title">วันที่/DATE</span>
+                    <span class="customer-info-value">{{ date }}</span>
+                </div>
+                <div class="customer-info-wrapper">
+                    <span class="customer-info-title">ที่อยู่/ADDRESS</span>
+                    <span class="customer-info-value">{{ address }}</span>
+                    <span class="customer-info-title">วเลขที่/PASSPORT</span>
+                    <span class="customer-info-value">{{ passport }}</span>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>จำนวน <br> Quanity</th>
+                    <th>รายการ <br> Description</th>
+                    <th>ราคาต่อหน่วย <br> Unit price</th>
+                    <th>จำนวน <br> Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>Check in	{{checkInDate}}</td>
+                    <td></td>
+                    <td>{{price}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Check out	{{checkOutDate}}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Deposit/มัดจำ</td>
+                    <td></td>
+                    <td>{{deposit}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Electricity/ค่าไฟ	{{electricity}}    000</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Water/ค่าน้ำ</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>cleaning/ค่าทำความสะอาดห้องเมื่อข้ายออก</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td>รวมเงิน <br> TOTAL</td>
+                    <td>{{total}} THB</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="receiver-sign-container">
+                <div class="receiver-sign-title">ผู้รับเงิน/RECEIVER</div>
+                <div class="receiver-sign-sign"></div>
+                <div class="receiver-sign-thanks">ขอบคุณทุกท่านที่อุดหนุน/Thank you for your kind attention</div>
+            </div>
+            <footer>
+                <div class="payment-info-container">
+                    <span>จ่ายเงิน โดย/ Pay by</span>
+                    <span>โอนเงิน / Bank tranfer</span>
+                    <span>ออมสิน Government Savings Bank 020342711197</span>
+                    <span>ชื่อบัญชี น.ส.รมิตาพร วรินทร์อุดมสุข</span>
+                </div>
+                <img src="../assets/promptPayLogo.png" alt="Prompt Pay logo" class="img-prompt-pay">
+                <img src="../assets/QRCode.png" alt="QR Code for payment" class="img-qr-code">
+            </footer>
         </div>
-        <h1 class="page-title">ใบแจ้งค่าใช้จ่าย / DEBIT NOTE</h1>
-        <div class="customer-info">
-            <div class="customer-info-wrapper">
-                <span class="customer-info-title">นาม/NAME</span>
-                <span class="customer-info-value">{{ name }}</span>
-                <span class="customer-info-title">วันที่/DATE</span>
-                <span class="customer-info-value">{{ date }}</span>
+
+        <div class="separator"></div>
+
+        <div class="column">
+            <div class="header">
+                <img src="../assets/logo.png" alt="Cheerduck" class="logo">
+                <div class="company-info">
+                    <span>354/175 Thappraya 12</span>
+                    <span>Banglamund Chonburi 20150</span>
+                    <span>Tel. 080-103-0800 </span>
+                    <span>Line ID: CHEERDUCK</span>
+                </div>
             </div>
-            <div class="customer-info-wrapper">
-                <span class="customer-info-title">ที่อยู่/ADDRESS</span>
-                <span class="customer-info-value">{{ address }}</span>
-                <span class="customer-info-title">วเลขที่/PASSPORT</span>
-                <span class="customer-info-value">{{ passport }}</span>
+            <h1 class="page-title">ใบแจ้งค่าใช้จ่าย / DEBIT NOTE</h1>
+            <div class="customer-info">
+                <div class="customer-info-wrapper">
+                    <span class="customer-info-title">นาม/NAME</span>
+                    <span class="customer-info-value">{{ name }}</span>
+                    <span class="customer-info-title">วันที่/DATE</span>
+                    <span class="customer-info-value">{{ date }}</span>
+                </div>
+                <div class="customer-info-wrapper">
+                    <span class="customer-info-title">ที่อยู่/ADDRESS</span>
+                    <span class="customer-info-value">{{ address }}</span>
+                    <span class="customer-info-title">วเลขที่/PASSPORT</span>
+                    <span class="customer-info-value">{{ passport }}</span>
+                </div>
             </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>จำนวน <br> Quanity</th>
+                    <th>รายการ <br> Description</th>
+                    <th>ราคาต่อหน่วย <br> Unit price</th>
+                    <th>จำนวน <br> Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>
+                        <div class="cell-content">
+                            <div class="cell-content-text">Check in</div>
+                            <div class="cell-content-value">{{checkInDate}}</div>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td>{{price}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <div class="cell-content">
+                            <div class="cell-content-text">Check out</div>
+                            <div class="cell-content-value">{{checkOutDate}}</div>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Deposit/มัดจำ</td>
+                    <td></td>
+                    <td>{{deposit}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <div class="cell-content">
+                            <div class="cell-content-text">Electricity/ค่าไฟ</div>
+                            <div class="cell-content-value">{{electricity}}    000</div>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Water/ค่าน้ำ</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>cleaning/ค่าทำความสะอาดห้องเมื่อข้ายออก</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td>รวมเงิน <br> TOTAL</td>
+                    <td>{{total}} THB</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="receiver-sign-container">
+                <div class="receiver-sign-title">ผู้รับเงิน/RECEIVER</div>
+                <div class="receiver-sign-sign"></div>
+                <div class="receiver-sign-thanks">ขอบคุณทุกท่านที่อุดหนุน/Thank you for your kind attention</div>
+            </div>
+            <footer>
+                <div class="payment-info-container">
+                    <span>จ่ายเงิน โดย/ Pay by</span>
+                    <span>โอนเงิน / Bank tranfer</span>
+                    <span>ออมสิน Government Savings Bank 020342711197</span>
+                    <span>ชื่อบัญชี น.ส.รมิตาพร วรินทร์อุดมสุข</span>
+                </div>
+                <img src="../assets/promptPayLogo.png" alt="Prompt Pay logo" class="img-prompt-pay">
+                <img src="../assets/QRCode.png" alt="QR Code for payment" class="img-qr-code">
+            </footer>
         </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>จำนวน <br> Quanity</th>
-                <th>รายการ <br> Description</th>
-                <th>ราคาต่อหน่วย <br> Unit price</th>
-                <th>จำนวน <br> Amount</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td></td>
-                <td>Check in	{{checkInDate}}</td>
-                <td></td>
-                <td>{{price}}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Check out	{{checkOutDate}}</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Deposit/มัดจำ</td>
-                <td></td>
-                <td>{{deposit}}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Electricity/ค่าไฟ	{{electricity}}    000</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Water/ค่าน้ำ</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>cleaning/ค่าทำความสะอาดห้องเมื่อข้ายออก</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2"></td>
-                <td>รวมเงิน <br> TOTAL</td>
-                <td>{{total}} THB</td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="receiver-sign-container">
-            <div class="receiver-sign-title">ผู้รับเงิน/RECEIVER</div>
-            <div class="receiver-sign-sign"></div>
-            <div class="receiver-sign-thanks">ขอบคุณทุกท่านที่อุดหนุน/Thank you for your kind attention</div>
-        </div>
-        <footer>
-            <div class="payment-info-container">
-                <span>จ่ายเงิน โดย/ Pay by</span>
-                <span>โอนเงิน / Bank tranfer</span>
-                <span>ออมสิน Government Savings Bank 020342711197</span>
-                <span>ชื่อบัญชี น.ส.รมิตาพร วรินทร์อุดมสุข</span>
-            </div>
-            <img src="../assets/promptPayLogo.png" alt="Prompt Pay logo" class="img-prompt-pay">
-            <img src="../assets/QRCode.png" alt="QR Code for payment" class="img-qr-code">
-        </footer>
+    </div>
     </div>
 
-
-    <div class="column">
-        <div class="header">
-            <img src="../assets/logo.png" alt="Cheerduck" class="logo">
-            <div class="company-info">
-                <span>354/175 Thappraya 12</span>
-                <span>Banglamund Chonburi 20150</span>
-                <span>Tel. 080-103-0800 </span>
-                <span>Line ID: CHEERDUCK</span>
-            </div>
-        </div>
-        <h1 class="page-title">ใบแจ้งค่าใช้จ่าย / DEBIT NOTE</h1>
-        <div class="customer-info">
-            <div class="customer-info-wrapper">
-                <span class="customer-info-title">นาม/NAME</span>
-                <span class="customer-info-value">{{ name }}</span>
-                <span class="customer-info-title">วันที่/DATE</span>
-                <span class="customer-info-value">{{ date }}</span>
-            </div>
-            <div class="customer-info-wrapper">
-                <span class="customer-info-title">ที่อยู่/ADDRESS</span>
-                <span class="customer-info-value">{{ address }}</span>
-                <span class="customer-info-title">วเลขที่/PASSPORT</span>
-                <span class="customer-info-value">{{ passport }}</span>
-            </div>
-        </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>จำนวน <br> Quanity</th>
-                <th>รายการ <br> Description</th>
-                <th>ราคาต่อหน่วย <br> Unit price</th>
-                <th>จำนวน <br> Amount</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td></td>
-                <td>
-                    <div class="cell-content">
-                        <div class="cell-content-text">Check in</div>
-                        <div class="cell-content-value">{{checkInDate}}</div>
-                    </div>
-                </td>
-                <td></td>
-                <td>{{price}}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <div class="cell-content">
-                        <div class="cell-content-text">Check out</div>
-                        <div class="cell-content-value">{{checkOutDate}}</div>
-                    </div>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Deposit/มัดจำ</td>
-                <td></td>
-                <td>{{deposit}}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <div class="cell-content">
-                        <div class="cell-content-text">Electricity/ค่าไฟ</div>
-                        <div class="cell-content-value">{{electricity}}    000</div>
-                    </div>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Water/ค่าน้ำ</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>cleaning/ค่าทำความสะอาดห้องเมื่อข้ายออก</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2"></td>
-                <td>รวมเงิน <br> TOTAL</td>
-                <td>{{total}} THB</td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="receiver-sign-container">
-            <div class="receiver-sign-title">ผู้รับเงิน/RECEIVER</div>
-            <div class="receiver-sign-sign"></div>
-            <div class="receiver-sign-thanks">ขอบคุณทุกท่านที่อุดหนุน/Thank you for your kind attention</div>
-        </div>
-        <footer>
-            <div class="payment-info-container">
-                <span>จ่ายเงิน โดย/ Pay by</span>
-                <span>โอนเงิน / Bank tranfer</span>
-                <span>ออมสิน Government Savings Bank 020342711197</span>
-                <span>ชื่อบัญชี น.ส.รมิตาพร วรินทร์อุดมสุข</span>
-            </div>
-            <img src="../assets/promptPayLogo.png" alt="Prompt Pay logo" class="img-prompt-pay">
-            <img src="../assets/QRCode.png" alt="QR Code for payment" class="img-qr-code">
-        </footer>
-    </div>
+    <button type="button" class="button-save-pdf">Save PDF</button>
     <script src="../node_modules/html2pdf.js/dist/html2pdf.bundle.min.js"></script>
     <script>
+        var element = document.getElementById('print-content');
+        var buttonSave = document.getElementsByClassName('button-save-pdf')[0];
 
-        var element = document.getElementById('body');
-        html2pdf()
-            .from(element)
-            .set({
-                jsPDF: {
-                    format: 'a4',
-                    orientation: "landscape",
-                }
-            })
-            .save();
+        buttonSave.addEventListener('click', function() {
+            html2pdf()
+                .from(element)
+                .set({
+                    jsPDF: {
+                        format: 'a4',
+                        orientation: "landscape",
+                    }
+                })
+                .save();
+        });
+
+
     </script>
 </body>
 </html>
