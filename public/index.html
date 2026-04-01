@@ -535,17 +535,30 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       margin-top: auto;
     }
 
     #print-content .r-payment-info {
+      flex: 1 1 auto;
       display: flex;
       flex-direction: column;
       font-size: 11px;
+      min-width: 0;
     }
 
-    #print-content .r-img-promptpay { width: 90px; }
-    #print-content .r-img-qr { width: auto; height: 130px; }
+    #print-content .r-img-promptpay {
+      width: 90px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    #print-content .r-img-qr {
+      width: auto;
+      height: 130px;
+      display: block;
+      flex-shrink: 0;
+    }
 
     /* ═══════════════════════════════════════════════════════════════
        PRINT STYLES — browser renders A4 landscape natively
@@ -1012,6 +1025,25 @@
       }));
     }
 
+    function isIOSDevice() {
+      const ua = navigator.userAgent || '';
+      return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+
+    function prepareReceiptClone(clonedDoc) {
+      const clonedContainer = clonedDoc.getElementById('receipt-container');
+      if (!clonedContainer) return;
+
+      // Keep the export node inside the cloned viewport so iOS Safari does not drop images.
+      clonedContainer.style.position = 'fixed';
+      clonedContainer.style.left = '0';
+      clonedContainer.style.top = '0';
+      clonedContainer.style.width = 'var(--receipt-page-width)';
+      clonedContainer.style.height = 'var(--receipt-page-height)';
+      clonedContainer.style.overflow = 'visible';
+      clonedContainer.style.zIndex = '-1';
+    }
+
     // ── Form submit → generate PDF ────────────────────────────────
     document.getElementById('receipt-form').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -1037,6 +1069,7 @@
       };
 
       const receiptElement = document.getElementById('print-content');
+      const iosExport = isIOSDevice();
 
       try {
         fillReceipt(data);
@@ -1055,8 +1088,9 @@
             image: { type: 'jpeg', quality: 0.98 },
             pagebreak: { mode: ['avoid-all', 'css'] },
             html2canvas: {
-              scale: 2,
+              scale: iosExport ? 1 : 2,
               useCORS: true,
+              imageTimeout: 15000,
               logging: false,
               backgroundColor: '#ffffff',
               windowWidth: exportWidth,
@@ -1064,7 +1098,8 @@
               width: exportWidth,
               height: exportHeight,
               scrollX: 0,
-              scrollY: 0
+              scrollY: 0,
+              onclone: prepareReceiptClone
             },
             jsPDF: {
               unit: 'mm',
