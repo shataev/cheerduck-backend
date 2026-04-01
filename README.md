@@ -58,7 +58,7 @@ PORT=4000 npm start
 
 - `index.html` - lightweight redirect page for generic static hosting and local preview.
 - `public/index.html` - main UI and client-side receipt generation logic.
-- `assets/` - images for the logo, PromptPay, and QR code.
+- `public/assets/` - images for the logo, PromptPay, and QR code.
 - `templates/receipt.html` - alternative HTML-based receipt template using `html2pdf.js` from a CDN.
 - `templates/receipt.css` - styles for the alternative template.
 - `templates/receipt.js` - simple PDF generation example using `pdfkit`.
@@ -91,10 +91,10 @@ The project is ready for static hosting. Recommended targets:
 - Cloudflare Pages
 - GitHub Pages with a small custom setup
 
-For Vercel and Netlify, the included config files route `/` to `public/index.html` and keep `/assets` and `/templates` accessible.
+For Vercel and Netlify, the included config files route `/` to `public/index.html`, map `/assets` to `public/assets`, and keep `/templates` accessible.
 
 ### Known Limitations
 
 - The main PDF output is client-side and relies on the browser print dialog.
-- Correct rendering depends on image files inside `assets/`: `logo.png`, `promptPayLogo.png`, and `QRCode.png`.
+- Correct rendering depends on image files inside `public/assets/`: `logo.png`, `promptPayLogo.png`, and `QRCode.png`.
 - Automated tests are not set up yet.

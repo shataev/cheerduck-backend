@@ -8,7 +8,7 @@ status = 200
 
 [[redirects]]
 from = "/assets/*"
-to = "/assets/:splat"
+to = "/public/assets/:splat"
 status = 200
 
 [[redirects]]
