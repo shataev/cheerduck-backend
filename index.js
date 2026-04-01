@@ -16,13 +16,13 @@ async function fillTemplate(data) {
                 type: PatchType.PARAGRAPH,
                 children: [new TextRun(data.name)]
             },
-            date: {
-                type: PatchType.PARAGRAPH,
-                children: [new TextRun(data.date)]
-            },
             passport: {
                 type: PatchType.PARAGRAPH,
                 children: [new TextRun(data.passport)]
+            },
+            date: {
+                type: PatchType.PARAGRAPH,
+                children: [new TextRun(data.date)]
             },
             address: {
                 type: PatchType.PARAGRAPH,
