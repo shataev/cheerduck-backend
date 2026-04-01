@@ -7,7 +7,7 @@
     },
     {
       "source": "/assets/(.*)",
-      "destination": "/assets/$1"
+      "destination": "/public/assets/$1"
     },
     {
       "source": "/templates/(.*)",
