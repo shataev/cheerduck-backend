@@ -547,6 +547,13 @@
       min-width: 0;
     }
 
+    #print-content .r-promptpay-wrap {
+      flex: 0 0 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     #print-content .r-img-promptpay {
       width: 90px;
       display: block;
@@ -816,7 +823,9 @@
             <span>020342711197</span>
             <span>ชื่อบัญชี น.ส.รมิตาพร วรินทร์อุดมสุข</span>
           </div>
-          <img src="assets/promptPayLogo.png" alt="PromptPay" class="r-img-promptpay">
+          <div class="r-promptpay-wrap">
+            <img src="assets/promptPayLogo.png" alt="PromptPay" class="r-img-promptpay">
+          </div>
           <img src="assets/QRCode.png" alt="QR Code" class="r-img-qr">
         </div>
       </div>
@@ -918,7 +927,9 @@
             <span>020342711197</span>
             <span>ชื่อบัญชี น.ส.รมิตาพร วรินทร์อุดมสุข</span>
           </div>
-          <img src="assets/promptPayLogo.png" alt="PromptPay" class="r-img-promptpay">
+          <div class="r-promptpay-wrap">
+            <img src="assets/promptPayLogo.png" alt="PromptPay" class="r-img-promptpay">
+          </div>
           <img src="assets/QRCode.png" alt="QR Code" class="r-img-qr">
         </div>
       </div>
@@ -1044,6 +1055,12 @@
       clonedContainer.style.zIndex = '-1';
     }
 
+    function getPdfExportScale(isIOS) {
+      const deviceScale = window.devicePixelRatio || 1;
+      if (isIOS) return Math.min(deviceScale, 2);
+      return Math.max(2, Math.min(deviceScale, 3));
+    }
+
     // ── Form submit → generate PDF ────────────────────────────────
     document.getElementById('receipt-form').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -1070,6 +1087,7 @@
 
       const receiptElement = document.getElementById('print-content');
       const iosExport = isIOSDevice();
+      const exportScale = getPdfExportScale(iosExport);
 
       try {
         fillReceipt(data);
@@ -1085,10 +1103,10 @@
           .set({
             margin: [5, 5, 5, 5],
             filename: buildPdfFilename(data),
-            image: { type: 'jpeg', quality: 0.98 },
+            image: { type: 'png' },
             pagebreak: { mode: ['avoid-all', 'css'] },
             html2canvas: {
-              scale: iosExport ? 1 : 2,
+              scale: exportScale,
               useCORS: true,
               imageTimeout: 15000,
               logging: false,
