@@ -162,7 +162,7 @@
     }
 
     @media (max-width: 600px) {
-      .form-grid, .form-grid.cols-4 {
+      .form-grid, .form-grid.cols-4, .form-grid.cols-2 {
         grid-template-columns: 1fr;
       }
       .col-span-2 {
@@ -193,14 +193,21 @@
     .field input {
       width: 100%;
       padding: 10px 13px;
+      min-height: 44px;
       border: 1.5px solid var(--slate-200);
       border-radius: var(--radius-sm);
       font-size: 14px;
+      line-height: 1.2;
       font-family: 'Inter', sans-serif;
       color: var(--slate-900);
       background: var(--slate-50);
       transition: border-color .15s, box-shadow .15s, background .15s;
       outline: none;
+    }
+
+    .field input[type="date"] {
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     .field input::placeholder {
@@ -215,6 +222,15 @@
 
     .field input:hover:not(:focus) {
       border-color: var(--slate-300);
+    }
+
+    @media (max-width: 600px) {
+      .field label {
+        font-size: 16px;
+      }
+      .field input {
+        font-size: 16px;
+      }
     }
 
     /* ─── Total highlight ─────────────────────────────────────────── */
@@ -345,6 +361,14 @@
     .toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
+    }
+
+    .page-footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--slate-500);
     }
 
     /* ═══════════════════════════════════════════════════════════════
@@ -541,7 +565,6 @@
     <img src="assets/logo.png" alt="Cheerduck">
     <div class="page-header-divider"></div>
     <span class="page-header-title">Receipt Generator</span>
-    <span class="page-header-subtitle">Cheerduck Property · Pattaya, Thailand</span>
   </header>
 
   <!-- ── Main Form ────────────────────────────────────────────────── -->
@@ -658,6 +681,11 @@
       </button>
 
     </form>
+
+    <div class="page-footer">
+      <div>Cheerduck Property · Pattaya, Thailand</div>
+      <div>Powered by VShataev</div>
+    </div>
   </div>
 
   <!-- ── Hidden Receipt Template (for PDF generation) ─────────────── -->
