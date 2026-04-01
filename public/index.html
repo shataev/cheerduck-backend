@@ -32,6 +32,9 @@
       --radius-lg: 16px;
       --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
       --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.04);
+      --receipt-page-width: 287mm;
+      --receipt-page-height: 200mm;
+      --receipt-page-margin: 5mm;
     }
 
     body {
@@ -40,6 +43,8 @@
       color: var(--slate-900);
       min-height: 100vh;
       padding-bottom: 60px;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     /* ─── Page Header ─────────────────────────────────────────────── */
@@ -378,17 +383,24 @@
       position: absolute;
       left: -9999px;
       top: 0;
+      width: var(--receipt-page-width);
+      height: var(--receipt-page-height);
+      overflow: hidden;
     }
 
     #print-content {
-      width: 297mm;
-      height: 210mm;
+      width: var(--receipt-page-width);
+      height: var(--receipt-page-height);
       font-family: Arial, sans-serif;
-      font-size: 12px;
+      font-size: 11px;
+      line-height: 1.15;
       margin: 0;
       padding: 0;
       display: flex;
       background: white;
+      overflow: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     #print-content .r-column {
@@ -396,7 +408,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      padding: 16px;
     }
 
     #print-content .r-separator {
@@ -467,8 +479,8 @@
     #print-content .r-table th {
       border-bottom: 1px solid black;
       border-right: 1px solid black;
-      height: 26px;
-      padding: 4px 5px;
+      height: 24px;
+      padding: 3px 5px;
     }
 
     #print-content .r-table td:nth-child(3),
@@ -539,7 +551,7 @@
        PRINT STYLES — browser renders A4 landscape natively
     ════════════════════════════════════════════════════════════════ */
     @media print {
-      @page { size: A4 landscape; margin: 0; }
+      @page { size: A4 landscape; margin: var(--receipt-page-margin); }
 
       /* Hide all UI */
       body { background: white !important; padding: 0 !important; margin: 0 !important; }
@@ -552,8 +564,12 @@
         position: fixed;
         left: 0;
         top: 0;
-        width: 297mm;
-        height: 210mm;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        overflow: hidden;
       }
     }
   </style>
@@ -899,6 +915,7 @@
   <!-- ── Toast ─────────────────────────────────────────────────────── -->
   <div class="toast" id="toast"></div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     // ── Auto-fill today's date ────────────────────────────────────
     const today = new Date().toISOString().split('T')[0];
@@ -968,6 +985,32 @@
       setTimeout(() => t.classList.remove('show'), duration);
     }
 
+    function buildPdfFilename(data) {
+      const safeName = (data.name || 'receipt')
+        .trim()
+        .replace(/[^a-z0-9]+/gi, '-')
+        .replace(/^-+|-+$/g, '')
+        .toLowerCase();
+
+      const safeDate = (data.date || '')
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]+/gi, '')
+        .toLowerCase();
+
+      return `cheerduck-receipt-${safeName || 'guest'}${safeDate ? `-${safeDate}` : ''}.pdf`;
+    }
+
+    async function waitForReceiptAssets(root) {
+      const images = Array.from(root.querySelectorAll('img'));
+      await Promise.all(images.map((img) => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve) => {
+          img.addEventListener('load', resolve, { once: true });
+          img.addEventListener('error', resolve, { once: true });
+        });
+      }));
+    }
+
     // ── Form submit → generate PDF ────────────────────────────────
     document.getElementById('receipt-form').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -992,22 +1035,60 @@
         total:            document.getElementById('total').value,
       };
 
-      fillReceipt(data);
+      const receiptElement = document.getElementById('print-content');
 
-      // Wait for DOM update, then open print dialog
-      await new Promise(r => setTimeout(r, 120));
+      try {
+        fillReceipt(data);
 
-      btn.disabled = false;
-      btn.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="12" y1="11" x2="12" y2="17"/>
-          <line x1="9" y1="14" x2="15" y2="14"/>
-        </svg>
-        Generate PDF Receipt`;
+        // Give the hidden receipt a frame to finish layout updates.
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        await waitForReceiptAssets(receiptElement);
 
-      window.print();
+        const exportWidth = Math.ceil(receiptElement.scrollWidth);
+        const exportHeight = Math.ceil(receiptElement.scrollHeight);
+
+        await html2pdf()
+          .set({
+            margin: [5, 5, 5, 5],
+            filename: buildPdfFilename(data),
+            image: { type: 'jpeg', quality: 0.98 },
+            pagebreak: { mode: ['avoid-all', 'css'] },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              logging: false,
+              backgroundColor: '#ffffff',
+              windowWidth: exportWidth,
+              windowHeight: exportHeight,
+              width: exportWidth,
+              height: exportHeight,
+              scrollX: 0,
+              scrollY: 0
+            },
+            jsPDF: {
+              unit: 'mm',
+              format: 'a4',
+              orientation: 'landscape'
+            }
+          })
+          .from(receiptElement)
+          .save();
+
+        showToast('PDF downloaded successfully');
+      } catch (error) {
+        console.error('PDF generation failed', error);
+        showToast('Failed to generate PDF. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="11" x2="12" y2="17"/>
+            <line x1="9" y1="14" x2="15" y2="14"/>
+          </svg>
+          Generate PDF Receipt`;
+      }
     });
   </script>
 </body>
