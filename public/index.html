@@ -428,6 +428,16 @@
     /* ═══════════════════════════════════════════════════════════════
        RECEIPT TEMPLATE STYLES  (screen: hidden off-canvas)
     ════════════════════════════════════════════════════════════════ */
+    /* html2pdf copies the receipt into its own capture container and centres it
+       with `margin: auto`. That offset is measured in the live page, but is not
+       reproduced inside html2canvas's cloned viewport (which we pin to the
+       receipt width), so the crop rectangle ended up shifted by
+       (windowWidth - receiptWidth) / 2 on any window wider than the receipt.
+       Pinning the container to the left keeps both layouts in agreement. */
+    .html2pdf__container {
+      margin: 0 !important;
+    }
+
     #receipt-container {
       position: absolute;
       left: -9999px;
@@ -1206,6 +1216,11 @@
               windowHeight: exportHeight,
               width: exportWidth,
               height: exportHeight,
+              // Crop from the origin of the cloned viewport instead of letting
+              // html2canvas infer it from the live page, where the capture
+              // container's position depends on the window width.
+              x: 0,
+              y: 0,
               scrollX: 0,
               scrollY: 0,
               onclone: prepareReceiptClone
