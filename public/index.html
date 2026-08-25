@@ -311,6 +311,50 @@
       flex-shrink: 0;
     }
 
+    /* Dev-only helper button (hidden unless the page runs in dev mode) */
+    .btn-dev {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      background: white;
+      color: var(--teal-700);
+      border: 1px dashed var(--teal-500);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+      transition: background .15s, border-color .15s;
+    }
+
+    .btn-dev[hidden] { display: none; }
+
+    .btn-dev:hover:not(:disabled) {
+      background: var(--teal-50);
+      border-color: var(--teal-600);
+    }
+
+    .btn-dev:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .btn-dev svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .btn-dev .spinner {
+      border-color: rgba(13,148,136,.25);
+      border-top-color: var(--teal-600);
+    }
+
     .spinner {
       width: 18px;
       height: 18px;
@@ -721,6 +765,15 @@
         Generate PDF Receipt
       </button>
 
+      <!-- Dev-only: renders the receipt from sample data, no form input needed -->
+      <button type="button" class="btn-dev" id="dev-generate-btn" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"/>
+          <polyline points="8 6 2 12 8 18"/>
+        </svg>
+        Generate sample PDF (dev)
+      </button>
+
     </form>
 
     <div class="page-footer">
@@ -950,19 +1003,42 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     // ── Auto-fill today's date ────────────────────────────────────
-    const today = new Date().toISOString().split('T')[0];
+    // Built from local date parts — toISOString() would shift the day
+    // for anyone whose UTC offset puts them on a different calendar date.
+    function toIsoDate(d) {
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+
+    const today = toIsoDate(new Date());
     document.getElementById('date').value = today;
 
     // ── Auto-calculate total ──────────────────────────────────────
+    const ELECTRICITY_RATE = 8;
+
+    function electricityUnits(before, after) {
+      return Math.max(0, after - before);
+    }
+
+    function calcTotal(v) {
+      const elec = electricityUnits(v.beforeElectricity, v.afterElectricity) * ELECTRICITY_RATE;
+      return v.price + v.deposit + elec + v.water + v.cleaning;
+    }
+
+    function readChargeFields() {
+      const num = (id) => parseFloat(document.getElementById(id).value) || 0;
+      return {
+        price:             num('price'),
+        deposit:           num('deposit'),
+        beforeElectricity: num('beforeElectricity'),
+        afterElectricity:  num('afterElectricity'),
+        water:             num('water'),
+        cleaning:          num('cleaning'),
+      };
+    }
+
     function recalcTotal() {
-      const price  = parseFloat(document.getElementById('price').value)              || 0;
-      const deposit= parseFloat(document.getElementById('deposit').value)            || 0;
-      const before = parseFloat(document.getElementById('beforeElectricity').value)  || 0;
-      const after  = parseFloat(document.getElementById('afterElectricity').value)   || 0;
-      const water  = parseFloat(document.getElementById('water').value)              || 0;
-      const cleaning=parseFloat(document.getElementById('cleaning').value)           || 0;
-      const elec   = Math.max(0, after - before) * 8;
-      const sum = price + deposit + elec + water + cleaning;
+      const sum = calcTotal(readChargeFields());
       if (sum > 0) document.getElementById('total').value = sum;
     }
     document.getElementById('price').addEventListener('input', recalcTotal);
@@ -982,8 +1058,8 @@
 
     // ── Fill receipt placeholders ─────────────────────────────────
     function fillReceipt(data) {
-      const elecResult = Math.max(0, data.afterElectricity - data.beforeElectricity);
-      const elecAmount = elecResult * 8;
+      const elecResult = electricityUnits(data.beforeElectricity, data.afterElectricity);
+      const elecAmount = elecResult * ELECTRICITY_RATE;
       const elecDesc   = `${data.afterElectricity}-${data.beforeElectricity}=${elecResult}`;
 
       const pairs = [
@@ -1068,30 +1144,38 @@
       return Math.max(2, Math.min(deviceScale, 3));
     }
 
-    // ── Form submit → generate PDF ────────────────────────────────
-    document.getElementById('receipt-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
+    // ── Collect data ──────────────────────────────────────────────
+    function collectFormData() {
+      return {
+        name:         document.getElementById('name').value.trim(),
+        date:         document.getElementById('date').value,
+        address:      document.getElementById('address').value.trim(),
+        passport:     document.getElementById('passport').value.trim(),
+        checkInDate:  document.getElementById('checkInDate').value,
+        checkOutDate: document.getElementById('checkOutDate').value,
+        total:        document.getElementById('total').value,
+        ...readChargeFields(),
+      };
+    }
 
-      const btn = document.getElementById('generate-btn');
+    // Turns raw form/sample values into what the receipt template expects.
+    function toReceiptData(raw) {
+      return {
+        ...raw,
+        date:         fmtDate(raw.date),
+        checkInDate:  fmtDate(raw.checkInDate),
+        checkOutDate: fmtDate(raw.checkOutDate),
+        total:        raw.total || calcTotal(raw),
+      };
+    }
+
+    // ── Generate PDF ──────────────────────────────────────────────
+    async function generateReceiptPdf(rawData, btn) {
+      const btnLabel = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '<div class="spinner"></div> Generating PDF…';
 
-      const data = {
-        name:        document.getElementById('name').value.trim(),
-        date:        fmtDate(document.getElementById('date').value),
-        address:     document.getElementById('address').value.trim(),
-        passport:    document.getElementById('passport').value.trim(),
-        checkInDate: fmtDate(document.getElementById('checkInDate').value),
-        checkOutDate:fmtDate(document.getElementById('checkOutDate').value),
-        price:            document.getElementById('price').value,
-        deposit:          document.getElementById('deposit').value,
-        beforeElectricity:parseFloat(document.getElementById('beforeElectricity').value) || 0,
-        afterElectricity: parseFloat(document.getElementById('afterElectricity').value)  || 0,
-        water:            parseFloat(document.getElementById('water').value)             || 0,
-        cleaning:         parseFloat(document.getElementById('cleaning').value)          || 0,
-        total:            document.getElementById('total').value,
-      };
-
+      const data = toReceiptData(rawData);
       const receiptElement = document.getElementById('print-content');
       const iosExport = isIOSDevice();
       const exportScale = getPdfExportScale(iosExport);
@@ -1141,16 +1225,54 @@
         showToast('Failed to generate PDF. Please try again.');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="12" y1="11" x2="12" y2="17"/>
-            <line x1="9" y1="14" x2="15" y2="14"/>
-          </svg>
-          Generate PDF Receipt`;
+        btn.innerHTML = btnLabel;
       }
+    }
+
+    // ── Form submit → generate PDF ────────────────────────────────
+    document.getElementById('receipt-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      generateReceiptPdf(collectFormData(), document.getElementById('generate-btn'));
     });
+
+    // ── Dev mode: PDF from sample data, no form input ─────────────
+    function shiftDate(isoDate, days) {
+      const d = new Date(`${isoDate}T00:00:00`);
+      d.setDate(d.getDate() + days);
+      return toIsoDate(d);
+    }
+
+    const DEV_SAMPLE = {
+      name:              'Mr. John Smith',
+      date:              today,
+      address:           'Room 101',
+      passport:          'AB1234567',
+      checkInDate:       shiftDate(today, -8),
+      checkOutDate:      today,
+      price:             6000,
+      deposit:           6000,
+      beforeElectricity: 100,
+      afterElectricity:  120,
+      water:             50,
+      cleaning:          200,
+      total:             '', // filled in by toReceiptData() via calcTotal()
+    };
+
+    // window.CHEERDUCK_DEV is injected by scripts/dev-server.js when the
+    // CHEERDUCK_DEV env var is on (see `npm run dev`), so the flag follows the
+    // server rather than the hostname — a phone on the same Wi-Fi sees it too.
+    // `?dev` stays as a manual override for a one-off check on a deployed build.
+    function isDevMode() {
+      return window.CHEERDUCK_DEV === true
+        || new URLSearchParams(location.search).has('dev');
+    }
+
+    if (isDevMode()) {
+      const devBtn = document.getElementById('dev-generate-btn');
+      devBtn.hidden = false;
+      devBtn.addEventListener('click', () => generateReceiptPdf(DEV_SAMPLE, devBtn));
+    }
+
   </script>
 </body>
 </html>
