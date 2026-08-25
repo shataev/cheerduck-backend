@@ -127,3 +127,14 @@ For Vercel and Netlify, the included config files route `/` to `public/index.htm
 - The main PDF output is generated client-side, so it depends on the browser rendering the hidden template correctly.
 - Correct rendering depends on image files inside `public/assets/`: `logo.png`, `promptPayLogo.png`, and `QRCode.png`.
 - Automated tests are not set up yet.
+
+### Planned Improvements
+
+- Reduce the exported PDF size. A single receipt is currently around 13 MB,
+  because `html2pdf.js` rasterises the whole page to a PNG at a scale of 2-3.
+  Switching the `image` option in `public/index.html` to
+  `{ type: 'jpeg', quality: 0.92 }` should cut that by an order of magnitude;
+  the Thai text and the PromptPay QR code need a check afterwards to confirm
+  they stay legible. Rendering through the browser's own print pipeline instead
+  would keep the text vector-based and bring the file down to roughly 100 KB,
+  but it costs the one-tap download on iOS.
